@@ -15,3 +15,13 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# jqwik stores previously failing samples locally
+.jqwik-database
+
+# IDE metadata (VS Code Java, Eclipse, IntelliJ)
+.settings/
+.factorypath
+.vscode/
+.idea/
+*.iml
