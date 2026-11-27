@@ -1,0 +1,39 @@
+name: CI
+
+# When to run: on every pull request into main or dev,
+# and on every push that lands on main or dev (for example a merge).
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+# The workflow only needs to read the code, nothing more.
+permissions:
+  contents: read
+
+# If a pull request gets a new push while CI is still running on the old one,
+# cancel the old run. Runs on main and dev are never cancelled.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build and run all tests
+        run: ./mvnw --batch-mode --no-transfer-progress verify
